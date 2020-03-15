@@ -1,5 +1,6 @@
 import random
 
+
 # setting up function that checks if user entered an integer as the lowest number of the list
 def lowest_check():
     try:
@@ -8,6 +9,7 @@ def lowest_check():
     except:
         print("Please write an integer")
         lowest_check()
+
 
 # setting up function that checks if user entered an integer as the highest number of the list
 def highest_check(low):
@@ -19,27 +21,35 @@ def highest_check(low):
         else:
             print("Let's get started")
             secret = random.randint(low, high)
-            print(secret)
-            #return secret            
-            entrance_check(high, low)
+            # return secret
+            entrance_check(high, low, secret)
     except ValueError:
         print("Please write an integer")
         highest_check(low)
 
-def entrance_check(high, low):
+
+# setting up function that checks if user wrote an integer as their guess and it's between the highest and the lowest
+def entrance_check(high, low, secret):
     try:
         user_number = int(input("Try to guess the 'secret' number "))
         while user_number > high or user_number < low:
-            print ("Please write number between your highest and lowest numbers")
+            print("Please write number between your highest and lowest numbers")
             user_number = int(input("Try to guess the 'secret' number "))
         else:
-            print("ok")
+            winning_syst(secret, user_number)
     except:
         print("Please write an integer")
-        entrance_check(high,low)
-        
+        entrance_check(high, low)
+
+def winning_syst(secret, user_numb):
+    while user_numb != secret:
+        if user_numb > secret:
+            print("Try again, the secret number is lower")
+            user_numb = int(input("Try to guess the 'secret' number "))
+        elif user_numb < secret:
+            print("Try again, the secret number is higher")
+            user_numb = int(input("Try to guess the 'secret' number "))
+    else:
+        print("Congratulations! You guessed the secret number")
 
 lowest_check()
-
-
-
