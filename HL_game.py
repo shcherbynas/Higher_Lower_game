@@ -1,55 +1,63 @@
 import random
 
 
-# setting up function that checks if user entered an integer as the lowest number of the list
-def lowest_check():
-    try:
-        low = int(input("What is the lowest number of your list? "))
-        highest_check(low)
-    except:
-        print("Please write an integer")
-        lowest_check()
+# setting a function that checks if user wrote an integer
+def int_check(question, low=None, high=None):
+    global error
+    if low is not None and high is not None:
+        error = ("Please write an integer between {} and {}"
+                "(inclusive)".format(low, high))
+    elif low is not None and high is None:
+        error = ("Please write an integer more than "
+                 + str(low-1))
+    elif low is None and high is None:
+        error = ("Please write an integer")
+
+    while True:
+        try:
+            response = int(input(question))
+            if low is not None and response < low:
+                print(error)
+                continue
+            elif high is not None and response > high:
+                print(error)
+                continue
+            return response
+        except ValueError:
+            print(error)
+            continue
 
 
-# setting up function that checks if user entered an integer as the highest number of the list
-def highest_check(low):
-    try:
-        high = int(input("What is the highest number of your list? "))
-        while high < low:
-            print("The highest number has to be more than the lowest")
-            high = int(input("What is the highest number of your list? "))
+# setting up winning system that checks user guessed the secret number.
+# if user didn't guess secret number then program tells him whether the secret number is higher or lower
+def winning_syst(secret_n, user_numb, guesses_allow):
+    guesses = 0
+    while user_numb != secret_n and guesses < guesses_allowed:
+        guesses += 1
+
+        if guesses < guesses_allow:
+            if user_numb > secret_n:
+                print("Try again, the secret number is lower")
+                user_numb = int_check("Try to guess the 'secret' number ", lowest, highest)
+
+            elif user_numb < secret_n:
+                print("Try again, the secret number is higher")
+                user_numb = int_check("Try to guess the 'secret' number ", lowest, highest)
         else:
-            print("Let's get started")
-            secret = random.randint(low, high)
-            # return secret
-            entrance_check(high, low, secret)
-    except ValueError:
-        print("Please write an integer")
-        highest_check(low)
-
-
-# setting up function that checks if user wrote an integer as their guess and it's between the highest and the lowest
-def entrance_check(high, low, secret):
-    try:
-        user_number = int(input("Try to guess the 'secret' number "))
-        while user_number > high or user_number < low:
-            print("Please write number between your highest and lowest numbers")
-            user_number = int(input("Try to guess the 'secret' number "))
-        else:
-            winning_syst(secret, user_number)
-    except:
-        print("Please write an integer")
-        entrance_check(high, low)
-
-def winning_syst(secret, user_numb):
-    while user_numb != secret:
-        if user_numb > secret:
-            print("Try again, the secret number is lower")
-            user_numb = int(input("Try to guess the 'secret' number "))
-        elif user_numb < secret:
-            print("Try again, the secret number is higher")
-            user_numb = int(input("Try to guess the 'secret' number "))
-    else:
+            print("Sorry, you ran out of guesses")
+            print("The secret number was " + str(secret_n))
+    if user_numb == secret_n:
         print("Congratulations! You guessed the secret number")
 
-lowest_check()
+
+guesses_allowed = int_check("How many guesses do you want to have? ", 1)
+lowest = int_check("What is the lowest number of your list? ")
+highest = int_check("What is the highest number of your list? ", lowest+1)
+
+secret = random.randint(lowest, highest)
+print(secret)
+
+user_number = int_check("Try to guess the 'secret' number ", lowest, highest)
+
+
+winning_syst(secret, user_number, guesses_allowed)
